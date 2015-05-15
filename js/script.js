@@ -6,26 +6,28 @@
     var timelineTmpl = _.template('<div class="timeline col-md-1"><%= data.rows %></div>', {variable: 'data'});
 
     w.layOutDay = function (events) {
-        console.log('blah', eventArr);
+        console.log('blah', events);
     };
 
     function generateTimeStamps (start, end) {
         var arr = [];
         var i = start;
+        var timeBase;
         var oClock;
         var halfClock
 
         for (i; i <= end; i += 1) {
-            oClock = {
+            timeBase = {
                 hour: (i <= 12) ? i : i - 12,
-                ampm: (i > 0 && i < 12) ? 'AM' : 'PM',
-                minute: '00'
-            };
-            halfClock = {
-                hour: (i <= 12) ? i : i - 12,
-                minute: '30',
+                minute: '00',
                 ampm: ''
             };
+            oClock = _.defaults({
+                ampm: (i > 0 && i < 12) ? 'AM' : 'PM'
+            }, timeBase);
+            halfClock = _.defaults({
+                minute: '30'
+            }, timeBase);
 
             if (i !== end) {
                 arr.push(oClock, halfClock);
@@ -46,7 +48,7 @@
 
         timestampArray.forEach(function (stamp) {
             label = [stamp.hour, ':', stamp.minute].join('');
-            console.log(label);
+
             if (!stamp.ampm) {
                 output += timestampTmpl({label: '', ampm: label});
             } else {
@@ -57,8 +59,12 @@
         return timelineTmpl({rows: output});
     }
 
+    function renderTimeline (start, end) {
+        return _.compose(generateTimeStampRows, generateTimeStamps)(start, end);
+    }
+
     $(document).ready(function () {
-        $('.timelineWrapper').html(_.compose(generateTimeStampRows, generateTimeStamps)(9, 21));
-        w.layOutDay();
+        $('.timelineWrapper').html(renderTimeline(9, 21));
+        w.layOutDay(eventArr);
     });
 })(window, window.jQuery, window._);
