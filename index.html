@@ -15,11 +15,24 @@
     <script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="js/lib/underscore-min.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/script.js"></script>
 </head>
 <body>
     <div class="row">
-        <div class="timelineWrapper"></div>
+        <div class="timelineWrapper col-md-1"></div>
+        <div class="eventListWrapper col-md-4"></div>
     </div>
+
+    <script type="text/templates" id="timestampTmpl">
+        <div class="row timestamp-row">
+            <span class="text-primary timestamp-label"><%= data.label %></span>
+            <span class="text-muted ampm-label"><%= data.ampm %></span>
+        </div>
+    </script>
+
+    <script type="text/templates" id="timelineTmpl">
+        <div class="timeline"><%= data.rows %></div>
+    </script>
+
+    <script type="text/javascript" src="js/script.js"></script>
 </body>
 </html>

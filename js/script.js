@@ -2,12 +2,16 @@
     'use strict';
     var eventArr = [{start: 30, end: 150}, {start: 540, end: 600},
         {start: 560, end: 620}, {start: 610, end: 670} ];
-    var timestampTmpl = _.template('<div class="row"> <span class="text-primary"><%= data.label %></span> <span class="text-muted"><%= data.ampm %></span> </div>', {variable: 'data'});
-    var timelineTmpl = _.template('<div class="timeline col-md-1"><%= data.rows %></div>', {variable: 'data'});
+    var timestampTmpl = getTempl('#timestampTmpl');
+    var timelineTmpl = getTempl('#timelineTmpl');
 
     w.layOutDay = function (events) {
         console.log('blah', events);
     };
+
+    function getTempl (selector) {
+        return _.template($(selector).html(), {variable: 'data'});
+    }
 
     function generateTimeStamps (start, end) {
         var arr = [];
