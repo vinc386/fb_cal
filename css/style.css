@@ -1,3 +1,6 @@
+.contentWrapper {
+    padding: 2rem 1rem;
+}
 .timeline {
     text-align: right;
 }
@@ -6,7 +9,14 @@
 }
 .timestamp-row {
     height: 3rem;
+    line-height: 0;
+    margin-right: -5px;
 }
 .ampm-label {
     font-size: 1rem;
+}
+.eventListWrapper {
+    background-color: #ececec;
+    width: 62rem;
+    height: 72rem;
 }
