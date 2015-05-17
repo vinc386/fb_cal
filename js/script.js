@@ -5,10 +5,10 @@
     var timelineTmpl = getTempl('#timelineTmpl');
 
     w.layOutDay = function (events) {
-        eventArr = _.map(events, getEventDuration);
+        eventArr = _.map(setPrevEvent(events), getEventDuration);
         $('.timelineWrapper').html(renderTimeline(9, 21));
         getOverlappedEventCount(eventArr);
-        console.log('blah', events);
+        w.console.log('blah', events);
     };
 
     function getTempl (selector) {
@@ -16,44 +16,47 @@
     }
 
     function getEventDuration (e) {
-        return _.defaults({}, e, {duration: e.end - e.start})
+        return _.defaults({}, e, {duration: e.end - e.start});
+    }
+
+    function isOverlapped (e1, e2) {
+        if ((e1.start <= e2.start && e1.end >= e2.start) ||
+            (e1.start >= e2.start && e1.start >= e2.end))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function setPrevEvent (eventList) {
+        var list = _.sortBy(eventList, 'start');
+
+        return _.map(list, function (e, index) {
+            if (index > 0) {
+                e.prevEvent = eventList[index - 1];
+            } else if (index === 0) {
+                e.prevEvent = null;
+            }
+            return e;
+        });
     }
 
     function getOverlappedEventCount (eventList) {
-        var rest;
-        var isOverlapped = function (e1, e2) {
-            if (
-                // 1 event starts in the middle of another event
-                // 2 events start the same time
-                // 2 events start and end at the same time
-                (e1.start <= e2.start && e1.end <= e2.start) ||
-                (e1.start >= e2.start && e1.end >= e2.end)
-                ) {
-                return true;
-            }
-            return false;
-        }
-
-        eventList.forEach(function (e) {
-            rest = _.without(eventList, e);
+        eventList.forEach(function (e, i) {
             e.overlap = e.overlap || 0;
-
-            rest.forEach(function (_e) {
-                if (isOverlapped(e, _e))
-                {
-                    e.overlap += 1;
-                }
-            });
+            // if (isOverlapped(e, e.prevEvent)) {
+            //     e.overlap += 1;
+            // }
         });
-        console.log(eventList);
-    };
+        w.console.log(eventList);
+    }
 
     function generateTimeStamps (start, end) {
         var arr = [];
         var i = start;
         var timeBase;
         var oClock;
-        var halfClock
+        var halfClock;
 
         for (i; i <= end; i += 1) {
             timeBase = {
