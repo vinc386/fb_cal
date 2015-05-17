@@ -1,54 +1,18 @@
-(function (w, $, _) {
+(function (w, $, _, EventList) {
     'use strict';
     var eventArr;
     var timestampTmpl = getTempl('#timestampTmpl');
     var timelineTmpl = getTempl('#timelineTmpl');
 
     w.layOutDay = function (events) {
-        eventArr = _.map(setPrevEvent(events), getEventDuration);
+        eventArr = new EventList(events);
         $('.timelineWrapper').html(renderTimeline(9, 21));
-        getOverlappedEventCount(eventArr);
+        eventArr.getOverlappedEventCount();
         w.console.log('blah', events);
     };
 
     function getTempl (selector) {
         return _.template($(selector).html(), {variable: 'data'});
-    }
-
-    function getEventDuration (e) {
-        return _.defaults({}, e, {duration: e.end - e.start});
-    }
-
-    function isOverlapped (e1, e2) {
-        if ((e1.start <= e2.start && e1.end >= e2.start) ||
-            (e1.start >= e2.start && e1.start >= e2.end))
-        {
-            return true;
-        }
-        return false;
-    }
-
-    function setPrevEvent (eventList) {
-        var list = _.sortBy(eventList, 'start');
-
-        return _.map(list, function (e, index) {
-            if (index > 0) {
-                e.prevEvent = eventList[index - 1];
-            } else if (index === 0) {
-                e.prevEvent = null;
-            }
-            return e;
-        });
-    }
-
-    function getOverlappedEventCount (eventList) {
-        eventList.forEach(function (e, i) {
-            e.overlap = e.overlap || 0;
-            // if (isOverlapped(e, e.prevEvent)) {
-            //     e.overlap += 1;
-            // }
-        });
-        w.console.log(eventList);
     }
 
     function generateTimeStamps (start, end) {
@@ -109,4 +73,4 @@
         w.layOutDay([{start: 30, end: 150}, {start: 540, end: 600},
         {start: 560, end: 620}, {start: 610, end: 670} ]);
     });
-})(window, window.jQuery, window._);
+})(window, window.jQuery, window._, window.EventList);
