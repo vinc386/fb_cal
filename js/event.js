@@ -30,5 +30,21 @@
         this.prevEvent = _event;
     };
 
+    CalendarEvent.prototype.setDisplayAttr = function() {
+        this.display = {
+            top: this.start + 'px',
+            height: this.getDuration() + 'px',
+            width: 'auto' // TODO: calculate this base on # of collisions
+        };
+    };
+
+    CalendarEvent.prototype.getCssString = function() {
+        var JSONStr;
+        this.setDisplayAttr();
+        JSONStr = JSON.stringify(this.display);
+        return JSONStr.substring(1, JSONStr.length - 1)
+                .replace(/"/g, '').replace(/,/g, ';');
+    };
+
     w.CalendarEvent = CalendarEvent;
 })(window, window._);
