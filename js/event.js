@@ -1,11 +1,15 @@
 (function (w, _) {
     'use strict';
-    function CalendarEvent (obj) {
+    function CalendarEvent (obj, index) {
+        var i = !isNaN(index) ? (index + 1) : '';
         var def = {
             start: 0,
             end: 0,
-            location: 'Sample Location',
-            title: 'Sample Title'
+            overlappedWith: [],
+            display: {},
+            location: 'Sample Location' + i,
+            title: 'Sample Title' + i,
+            description: 'description'  + i
         };
         _.extend(this, def, obj);
     }
@@ -18,8 +22,11 @@
     };
 
     CalendarEvent.prototype.isOverlappedWith = function (_event) {
-        if ((this.start <= _event.start && this.end >= _event.start) ||
-            (this.start >= _event.start && this.start >= _event.end))
+        if (!_event instanceof CalendarEvent) {
+            return _event;
+        }
+        if ((this.start >= _event.start && this.end <= _event.end) ||
+            (this.start >= _event.start && this.start <= _event.end))
         {
             return true;
         }

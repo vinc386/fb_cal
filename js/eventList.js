@@ -1,30 +1,40 @@
 (function (w, CalendarEvent, _) {
     'use strict';
+    var eventList;
+
     function EventList (collection) {
-        var sortedList = _.sortBy(collection, 'start');
-        return _.extend([], this, _.map(sortedList, instantiateEvent));
+        eventList = _.map(collection, instantiateEvent);
+        _.sortBy(eventList, 'start');
+        getOverlappedEventCount();
+        return _.extend([], this, eventList);
     }
 
-    function instantiateEvent (obj) {
-        return new CalendarEvent(obj);
+    function instantiateEvent (obj, index) {
+        return new CalendarEvent(obj, index);
     }
 
-    EventList.prototype.setPrevEvent = function() {
-        return _.map(this, function (_event, index) {
-            if (index > 0) {
-                _event.setPrevEvent(this[index - 1]);
-            } else if (index === 0) {
-                _event.setPrevEvent(null);
+    function getOverlappedEventCount() {
+        eventList.forEach(function (_event, index) {
+            checkOverlappedWithAllPreviousEvents(_event, null, index);
+            w.console.log(_event);
+        });
+    }
+
+    function checkOverlappedWithAllPreviousEvents (_event, prevEvent, index) {
+        var _prevEvent;
+        _event.prevEvent = (index && index > 0) ? eventList[index - 1] : null;
+        _prevEvent = prevEvent || _event.prevEvent;
+
+        if (_prevEvent && _event.isOverlappedWith(_prevEvent)) {
+            _event.overlappedWith.push(_prevEvent);
+            _prevEvent.overlappedWith.push(_event);
+            if(_prevEvent.prevEvent !== null) {
+                checkOverlappedWithAllPreviousEvents(_event, _prevEvent.prevEvent, index);
+            // } else {
+
             }
-            return _event;
-        });
-    };
-
-    EventList.prototype.getOverlappedEventCount = function() {
-        this.forEach(function (_event, index) {
-            w.console.log(_event, index);
-        });
-    };
+        }
+    }
 
     w.EventList = EventList;
 })(window, window.CalendarEvent, window._);
