@@ -37,20 +37,25 @@
         this.prevEvent = _event;
     };
 
-    CalendarEvent.prototype.setDisplayAttr = function() {
-        this.display = {
+    CalendarEvent.prototype.setDisplayAttr = function(obj) {
+        this.display = _.defaults({
             top: this.start + 'px',
-            height: this.getDuration() + 'px',
-            width: 'auto' // TODO: calculate this base on # of collisions
-        };
+            height: this.getDuration() + 'px'
+        }, obj);
     };
 
     CalendarEvent.prototype.getCssString = function() {
         var JSONStr;
-        this.setDisplayAttr();
         JSONStr = JSON.stringify(this.display);
         return JSONStr.substring(1, JSONStr.length - 1)
                 .replace(/"/g, '').replace(/,/g, ';');
+    };
+
+    CalendarEvent.prototype.getAllPreviousOverlappedEvent = function() {
+        var self = this;
+        return _.filter(this.overlappedWith, function (_event) {
+            return self.start >= _event.start;
+        });
     };
 
     w.CalendarEvent = CalendarEvent;

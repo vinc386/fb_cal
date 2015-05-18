@@ -1,11 +1,14 @@
 (function (w, CalendarEvent, _) {
     'use strict';
     var eventList;
+    var totalWidth;
 
-    function EventList (collection) {
+    function EventList (collection, wrapperWidth) {
         eventList = _.map(collection, instantiateEvent);
+        totalWidth = wrapperWidth;
         _.sortBy(eventList, 'start');
         getOverlappedEventCount();
+        eventList.forEach(getOffsets);
         return _.extend([], this, eventList);
     }
 
@@ -16,7 +19,6 @@
     function getOverlappedEventCount() {
         eventList.forEach(function (_event, index) {
             checkOverlappedWithAllPreviousEvents(_event, null, index);
-            w.console.log(_event);
         });
     }
 
@@ -34,6 +36,28 @@
 
             }
         }
+    }
+
+    function getOffsets (_event, index) {
+        var overlappedArr = _event.overlappedWith;
+        var _width;
+
+        if (!overlappedArr.length) {
+            _event.setDisplayAttr({
+                left: '15px',
+                width: totalWidth + 'px'
+            });
+        } else {
+            _width = totalWidth / (overlappedArr.length + 1);
+            console.log(_event.getAllPreviousOverlappedEvent());
+            _event.setDisplayAttr({
+                width: _width + 'px',
+                left: 15 + _width * overlappedArr.length + 'px'
+            });
+            // overlappedArr.forEach(function (__event, _index) {
+            // });
+        }
+        console.log(_event);
     }
 
     w.EventList = EventList;

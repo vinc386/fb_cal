@@ -4,12 +4,13 @@
     var timestampTmpl = getTempl('#timestampTmpl');
     var timelineTmpl = getTempl('#timelineTmpl');
     var eventTmpl = getTempl('#calEventTmpl');
+    var wrapperWidth = 590;
 
     w.layOutDay = function (events) {
-        eventArr = new EventList(events);
+        eventArr = new EventList(events, wrapperWidth);
         $('.timelineWrapper').html(renderTimeline(9, 21));
         $('.eventListWrapper').html(renderEvents(eventArr));
-        w.console.log('blah', events);
+        console.log('blah', events);
     };
 
     function getTempl (selector) {
