@@ -70,16 +70,21 @@
         return _.compose(generateTimeStampRows, generateTimeStamps)(start, end);
     }
 
-    function renderEvents (eventArr) {
+    function renderEvents (arr) {
         var output = '';
-        eventArr.forEach(function (_event) {
+        arr.forEach(function (_event, index) {
             output += eventTmpl(_event);
+            console.log(_event.title, _event.start, _event.end, _event.overlappedWith,
+                        'LEFT', _.result(_event.onLeft, 'title'), 'RIGHT', _.result(_event.onRight, 'title'));
         });
         return output;
     }
 
     $(document).ready(function () {
-        w.layOutDay([{start: 30, end: 150}, {start: 540, end: 600},
-        {start: 560, end: 620}, {start: 610, end: 670} ]);
+        // w.layOutDay([{start: 30, end: 150}, {start: 540, end: 600},
+        // {start: 560, end: 620}, {start: 610, end: 670} ]);
+        w.layOutDay([{ start: 30, end: 150 }, { start: 160, end: 200 }, { start: 180, end: 240 }, 
+            { start: 190, end: 210 }, { start: 192, end: 198 }, { start: 220, end: 230 }, { start: 540, end: 600 },
+            { start: 560, end: 620 }, { start: 610, end: 670 }]);
     });
 })(window, window.jQuery, window._, window.EventList);
