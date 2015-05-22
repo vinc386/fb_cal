@@ -10,7 +10,6 @@
         eventArr = new EventList(events, wrapperWidth);
         $('.timelineWrapper').html(renderTimeline(9, 21));
         $('.eventListWrapper').html(renderEvents(eventArr));
-        console.log('blah', events);
     };
 
     function getTempl (selector) {

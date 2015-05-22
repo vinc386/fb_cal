@@ -7,9 +7,9 @@
             end: 0,
             overlappedWith: [],
             display: {},
-            location: 'Sample Location' + i,
-            title: 'Sample Title' + i,
-            description: 'description'  + i
+            location: 'Sample Location ' + i,
+            title: 'Sample Title ' + i,
+            description: 'description ' + i
         };
         _.extend(this, def, obj);
     }
@@ -22,8 +22,8 @@
     };
 
     CalendarEvent.prototype.isOverlappedWith = function (_event) {
-        if (!_event instanceof CalendarEvent) {
-            return _event;
+        if (!(_event instanceof CalendarEvent)) {
+            return false;
         }
         if ((this.start >= _event.start && this.end <= _event.end) ||
             (this.start >= _event.start && this.start <= _event.end))
@@ -31,10 +31,6 @@
             return true;
         }
         return false;
-    };
-
-    CalendarEvent.prototype.setPrevEvent = function (_event) {
-        this.prevEvent = _event;
     };
 
     CalendarEvent.prototype.setDisplayAttr = function(obj) {
@@ -49,13 +45,6 @@
         JSONStr = JSON.stringify(this.display);
         return JSONStr.substring(1, JSONStr.length - 1)
                 .replace(/"/g, '').replace(/,/g, ';');
-    };
-
-    CalendarEvent.prototype.getAllPreviousOverlappedEvent = function() {
-        var self = this;
-        return _.filter(this.overlappedWith, function (_event) {
-            return self.start >= _event.start;
-        });
     };
 
     w.CalendarEvent = CalendarEvent;
