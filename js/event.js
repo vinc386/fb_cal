@@ -33,6 +33,17 @@
         return false;
     };
 
+    CalendarEvent.prototype.overlappedPriorEvents = function() {
+        var self = this;
+        return _.where(this.overlappedWith, function (_event) {
+            return _event.start < self.start;
+        });
+    };
+
+    CalendarEvent.prototype.getWidth = function() {
+        return this.display.width;
+    };
+
     CalendarEvent.prototype.setDisplayAttr = function(obj) {
         this.display = _.defaults({
             top: this.start + 'px',

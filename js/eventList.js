@@ -1,6 +1,7 @@
 (function (w, CalendarEvent, _) {
     'use strict';
     var eventList;
+    var totalWidth = 590;
 
     function EventList (collection) {
         eventList = _.map(collection, instantiateEvent);
@@ -65,11 +66,47 @@
     }
 
     function getOffsets (_event, index) {
-        return _event.setDisplayAttr();
-        // _event.setDisplayAttr({
-        //     left: '15px',
-        //     width: totalWidth + 'px'
-        // });
+        var displayObj = {};
+        var lCount = getLeftCount(_event);
+        var W;
+
+        if (_event.onLeft === undefined && _event.onRight === undefined) {
+            displayObj.width = totalWidth + 'px';
+            displayObj.left = 15 + 'px';
+        } else if (_event.onLeft && !_event.onRight) {
+            W = totalWidth / lCount;
+            displayObj.width = W + 'px';
+            displayObj.left = 15 + W * (lCount - 1) + 'px';
+            resetWidthAndLeft(_event, W);
+        } else if (!_event.onLeft && _event.onRight) {
+            displayObj.width = _event.onRight.getWidth();
+            displayObj.left = 15 + 'px';
+        }
+
+        return _event.setDisplayAttr(displayObj);
+    }
+
+    function resetWidthAndLeft (_event, W) {
+        if (_event.onLeft) {
+            _event.onLeft.setDisplayAttr({
+                width: W + 'px',
+                left: 15 + ((getLeftCount(_event) - 2) * W) + 'px'
+            });
+
+            if (_event.onLeft) {
+                resetWidthAndLeft(_event.onLeft, W);
+            }
+        }
+    } 
+
+    function getLeftCount (_event, count) {
+        var _count = count || 1;
+
+        if (_event.onLeft) {
+            _count += 1;
+            return getLeftCount(_event.onLeft, _count);
+        }
+        return _count;
     }
 
     w.EventList = EventList;

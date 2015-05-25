@@ -4,10 +4,9 @@
     var timestampTmpl = getTempl('#timestampTmpl');
     var timelineTmpl = getTempl('#timelineTmpl');
     var eventTmpl = getTempl('#calEventTmpl');
-    var wrapperWidth = 590;
 
     w.layOutDay = function (events) {
-        eventArr = new EventList(events, wrapperWidth);
+        eventArr = new EventList(events);
         $('.timelineWrapper').html(renderTimeline(9, 21));
         $('.eventListWrapper').html(renderEvents(eventArr));
     };
@@ -74,7 +73,7 @@
         var output = '';
         arr.forEach(function (_event, index) {
             output += eventTmpl(_event);
-            console.log(_event.title, _event.start, _event.end, _event.overlappedWith,
+            console.log(_event.title, _event.start, _event.end, _event.display, _event.leftCount,
                         'LEFT', _.result(_event.onLeft, 'title'), 'RIGHT', _.result(_event.onRight, 'title'));
         });
         return output;
