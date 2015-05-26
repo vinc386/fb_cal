@@ -2,35 +2,46 @@
     'use strict';
     var eventList;
     var totalWidth = 590;
+    var leftBorder = 15;
 
     function EventList (collection) {
-        eventList = _.map(collection, instantiateEvent);
-        _.sortBy(eventList, 'start');
-        getOverlappedEventCount();
-        eventList.forEach(getOffsets);
-        return _.extend([], this, eventList);
+        this.list = _.map(collection, instantiateEvent);
+        this.list = _.sortBy(this.list, 'start');
+        this.getOverlappedEventCount();
+        this.list.forEach(getTileOffset);
+        this.template = w.getTemplate('eventListWrapperTmpl');
+        _.extend({}, this.list);
     }
 
+    EventList.prototype.render = function() {
+        var htmlStr = '';
 
-    function instantiateEvent (obj, index) {
-        return new CalendarEvent(obj, index);
-    }
-
-    function getOverlappedEventCount() {
-        eventList.forEach(function (_event, index) {
-            var overlapped = checkOverlap(_event, getPrevEvent(_event));
+        this.list.map(function (_event) {
+            htmlStr +=  _event.template(_event);
         });
-    }
+        return this.template(htmlStr);
+    };
 
-    function getPrevEvent(_event) {
-        var index = eventList.indexOf(_event);
+    EventList.prototype.getOverlappedEventCount = function() {
+        var self = this;
+        this.list.forEach(function (_event, index) {
+            var overlapped = checkOverlap(_event, self.getPrevEvent(_event));
+        });
+    };
+
+    EventList.prototype.getPrevEvent = function (_event) {
+        var index = this.list.indexOf(_event);
         if (index > 0) {
-            return eventList[index - 1];
+            return this.list[index - 1];
         } else if (index === 0) {
-            return eventList[eventList.length - 1];
+            return this.list[this.list.length - 1];
         } else {
             return false;
         }
+    };
+
+    function instantiateEvent (obj, index) {
+        return new CalendarEvent(obj, index);
     }
 
     function checkOverlap(_event, prevEvent) {
@@ -65,22 +76,22 @@
         return result;
     }
 
-    function getOffsets (_event, index) {
+    function getTileOffset (_event, index) {
         var displayObj = {};
-        var lCount = getLeftCount(_event);
+        var lCount = getOnLeftEventCount(_event);
         var W;
 
         if (_event.onLeft === undefined && _event.onRight === undefined) {
-            displayObj.width = totalWidth + 'px';
-            displayObj.left = 15 + 'px';
+            displayObj.width = totalWidth;
+            displayObj.left = leftBorder;
         } else if (_event.onLeft && !_event.onRight) {
             W = totalWidth / lCount;
-            displayObj.width = W + 'px';
-            displayObj.left = 15 + W * (lCount - 1) + 'px';
+            displayObj.width = W;
+            displayObj.left = leftBorder + W * (lCount - 1);
             resetWidthAndLeft(_event, W);
         } else if (!_event.onLeft && _event.onRight) {
             displayObj.width = _event.onRight.getWidth();
-            displayObj.left = 15 + 'px';
+            displayObj.left = leftBorder;
         }
 
         return _event.setDisplayAttr(displayObj);
@@ -89,22 +100,19 @@
     function resetWidthAndLeft (_event, W) {
         if (_event.onLeft) {
             _event.onLeft.setDisplayAttr({
-                width: W + 'px',
-                left: 15 + ((getLeftCount(_event) - 2) * W) + 'px'
+                width: W,
+                left: leftBorder + ((getOnLeftEventCount(_event.onLeft) - 1) * W)
             });
-
-            if (_event.onLeft) {
-                resetWidthAndLeft(_event.onLeft, W);
-            }
+            resetWidthAndLeft(_event.onLeft, W);
         }
     } 
 
-    function getLeftCount (_event, count) {
+    function getOnLeftEventCount (_event, count) {
         var _count = count || 1;
 
         if (_event.onLeft) {
             _count += 1;
-            return getLeftCount(_event.onLeft, _count);
+            return getOnLeftEventCount(_event.onLeft, _count);
         }
         return _count;
     }

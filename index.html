@@ -14,34 +14,12 @@
     <!-- Javascript -->
     <script type="text/javascript" src="js/lib/jquery-1.11.3.min.js"></script>
     <script type="text/javascript" src="js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="js/templates.js"></script>
     <script type="text/javascript" src="js/event.js"></script>
     <script type="text/javascript" src="js/eventList.js"></script>
+    <script type="text/javascript" src="js/script.js"></script>
 </head>
 <body>
-    <div class="row contentWrapper">
-        <div class="timelineWrapper col-md-1"></div>
-        <div class="eventListWrapper col-md-4"></div>
-    </div>
-
-    <script type="text/templates" id="timestampTmpl">
-        <div class="row timestamp-row">
-            <span class="text-primary timestamp-label"><%= data.label %></span>
-            <span class="text-muted ampm-label"><%= data.ampm %></span>
-        </div>
-    </script>
-
-    <script type="text/templates" id="timelineTmpl">
-        <div class="timeline"><%= data.rows %></div>
-    </script>
-
-    <script type="text/templates" id="calEventTmpl">
-        <div class="eventTile" style="<%= data.getCssString() %>">
-            <h5 class="text-primary"><%= data.title %></h5>
-            <h5 class="text-muted"><small><%= data.location %></small></h5>
-            <h6 class="text-muted"><small><%= data.description %></small></h6>
-        </div>
-    </script>
-
-    <script type="text/javascript" src="js/script.js"></script>
+    <div class="row contentWrapper"></div>
 </body>
 </html>

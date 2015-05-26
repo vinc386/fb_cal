@@ -1,15 +1,15 @@
 (function (w, _) {
     'use strict';
-    function CalendarEvent (obj, index) {
-        var i = !isNaN(index) ? (index + 1) : '';
+    function CalendarEvent (obj) {
         var def = {
             start: 0,
             end: 0,
             overlappedWith: [],
             display: {},
-            location: 'Sample Location ' + i,
-            title: 'Sample Title ' + i,
-            description: 'description ' + i
+            location: 'Sample Location',
+            title: 'Sample Title',
+            description: 'description',
+            template: w.getTemplate('calEventTmpl')
         };
         _.extend(this, def, obj);
     }
@@ -46,14 +46,21 @@
 
     CalendarEvent.prototype.setDisplayAttr = function(obj) {
         this.display = _.defaults({
-            top: this.start + 'px',
-            height: this.getDuration() + 'px'
+            top: this.start,
+            height: this.getDuration()
         }, obj);
     };
 
     CalendarEvent.prototype.getCssString = function() {
+        var attrArr = ['height', 'top', 'width', 'left'];
         var JSONStr;
-        JSONStr = JSON.stringify(this.display);
+
+        JSONStr = JSON.stringify(_.mapObject(this.display, function (v, k) {
+            if (_.contains(attrArr, k)) {
+                return v + 'px';
+            }
+        }));
+
         return JSONStr.substring(1, JSONStr.length - 1)
                 .replace(/"/g, '').replace(/,/g, ';');
     };
