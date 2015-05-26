@@ -1,16 +1,13 @@
 (function (w, CalendarEvent, _) {
     'use strict';
-    var eventList;
     var totalWidth = 590;
     var leftBorder = 15;
 
     function EventList (collection) {
-        this.list = _.map(collection, instantiateEvent);
-        this.list = _.sortBy(this.list, 'start');
+        this.list = _.sortBy(_.map(collection, instantiateEvent), 'start');
         this.getOverlappedEventCount();
         this.list.forEach(getTileOffset);
         this.template = w.getTemplate('eventListWrapperTmpl');
-        _.extend({}, this.list);
     }
 
     EventList.prototype.render = function() {
